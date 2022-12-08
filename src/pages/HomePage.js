@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Header from "../components/Header";
 import styled from "styled-components";
+import axios from "axios";
 
 const Form = styled.form`
   display: flex;
@@ -9,7 +10,7 @@ const Form = styled.form`
   gap: 5px;
 `;
 function HomePage() {
-  const [form, setForm] = useState({ email: "", senha: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
 
   const onChange = (event) => {
     const { name, value } = event.target;
@@ -18,8 +19,17 @@ function HomePage() {
 
   const submitForm = (event) => {
     event.preventDefault();
-    console.log(form);
+    axios.post('https://us-central1-labenu-apis.cloudfunctions.net/labeX/:gabriel/login', form)
+    .then((response) => {
+      console.log(response);
+      localStorage.setItem("token", response.data.token)
+    })
+    .catch(error => {
+      console.log(error);
+    })
+    // console.log(form);
   };
+
   return (
     <main>
       <Header />
@@ -30,7 +40,7 @@ function HomePage() {
           id="email"
           name="email"
           type="text"
-          input="form.email"
+          value={form.email}
           onChange={onChange}
           placeholder="email"
           required
@@ -38,10 +48,10 @@ function HomePage() {
         />
         <label htmlFor="senha">Senha</label>
         <input
-          id="senha"
-          name="senha"
+          id="password"
+          name="password"
           type="password"
-          input="form.senha"
+          value={form.password}
           onChange={onChange}
           placeholder="senha"
           required
